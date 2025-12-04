@@ -11,7 +11,7 @@ import { storage } from './storage-json';
 dotenv.config();
 
 const app = express();
-const PORT = Number(process.env.PORT) || 4001;
+const PORT = process.env.PORT || 4000;
 
 // Configuração CORS
 const corsOptions = {
@@ -48,82 +48,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// ===== ROTA DE HEALTH CHECK =====
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Backend rodando', timestamp: new Date().toISOString() });
-});
-
 // ===== ROTA DE AUTENTICAÇÃO =====
 app.post('/api/auth/login', (req, res) => {
-  try {
-    console.log('\n========== [AUTH] NOVA TENTATIVA DE LOGIN ==========');
-    console.log('[AUTH] Timestamp:', new Date().toISOString());
-    console.log('[AUTH] Body recebido (raw):', JSON.stringify(req.body, null, 2));
-    console.log('[AUTH] Content-Type:', req.headers['content-type']);
-    console.log('[AUTH] Origin:', req.headers.origin || 'N/A');
-    
   const { email, senha } = req.body;
 
-    // Validação inicial
-    if (!email && !senha) {
-      console.log('[AUTH] ERRO: Email e senha não foram fornecidos');
+  if (!email || !senha) {
     return res.status(400).json({ error: 'Email e senha são obrigatórios' });
   }
 
-    if (!email) {
-      console.log('[AUTH] ERRO: Email não foi fornecido');
-      return res.status(400).json({ error: 'Email é obrigatório' });
-    }
-
-    if (!senha) {
-      console.log('[AUTH] ERRO: Senha não foi fornecida');
-      return res.status(400).json({ error: 'Senha é obrigatória' });
-    }
-
-    // Normalizar email (remover espaços e converter para lowercase)
-    const emailNormalizado = String(email).trim().toLowerCase();
-    const senhaNormalizada = String(senha).trim();
-
-    console.log('[AUTH] Email original:', email);
-    console.log('[AUTH] Email normalizado:', emailNormalizado);
-    console.log('[AUTH] Email length:', emailNormalizado.length);
-    console.log('[AUTH] Senha recebida (length):', senhaNormalizada.length);
-    console.log('[AUTH] Senha normalizada (primeiros 3 chars):', senhaNormalizada.substring(0, 3) + '***');
-
   // Credenciais padrão para modo sem banco
-    const emailEsperado = 'admin@admin.com';
-    const senhaEsperada = 'admin123';
-    
-    console.log('[AUTH] ========== COMPARAÇÃO ==========');
-    console.log('[AUTH] Email esperado:', emailEsperado);
-    console.log('[AUTH] Email recebido normalizado:', emailNormalizado);
-    console.log('[AUTH] Emails são iguais?', emailNormalizado === emailEsperado);
-    console.log('[AUTH] Senha esperada (length):', senhaEsperada.length);
-    console.log('[AUTH] Senha recebida (length):', senhaNormalizada.length);
-    console.log('[AUTH] Senhas são iguais?', senhaNormalizada === senhaEsperada);
-    
-    // Comparação detalhada
-    const emailMatch = emailNormalizado === emailEsperado;
-    const senhaMatch = senhaNormalizada === senhaEsperada;
-    
-    console.log('[AUTH] Email match:', emailMatch);
-    console.log('[AUTH] Senha match:', senhaMatch);
-    console.log('[AUTH] Ambos match?', emailMatch && senhaMatch);
-
-    if (emailMatch && senhaMatch) {
-      console.log('[AUTH] ✓✓✓ CREDENCIAIS VÁLIDAS! ✓✓✓');
-      console.log('[AUTH] Gerando token JWT...');
-      
+  if (email === 'admin@admin.com' && senha === 'admin123') {
     const jwtSecret = process.env.JWT_SECRET || 'jwt-secret-temporario';
     const token = jwt.sign(
       { userId: 1, email: 'admin@admin.com', role: 'admin' },
       jwtSecret,
       { expiresIn: '24h' }
     );
-
-      console.log('[AUTH] Token gerado com sucesso!');
-      console.log('[AUTH] Token (primeiros 30 chars):', token.substring(0, 30) + '...');
-      console.log('[AUTH] ========== LOGIN BEM-SUCEDIDO ==========\n');
 
     return res.json({ 
       token,
@@ -136,26 +76,7 @@ app.post('/api/auth/login', (req, res) => {
     });
   }
 
-    console.log('[AUTH] ✗✗✗ CREDENCIAIS INVÁLIDAS ✗✗✗');
-    console.log('[AUTH] Motivo:');
-    if (!emailMatch) {
-      console.log('[AUTH]   - Email não corresponde');
-      console.log('[AUTH]   - Esperado:', JSON.stringify(emailEsperado));
-      console.log('[AUTH]   - Recebido:', JSON.stringify(emailNormalizado));
-    }
-    if (!senhaMatch) {
-      console.log('[AUTH]   - Senha não corresponde');
-      console.log('[AUTH]   - Esperado (length):', senhaEsperada.length);
-      console.log('[AUTH]   - Recebido (length):', senhaNormalizada.length);
-    }
-    console.log('[AUTH] ========== LOGIN FALHOU ==========\n');
-
   return res.status(401).json({ error: 'Credenciais inválidas' });
-  } catch (error: any) {
-    console.error('[AUTH] ERRO CRÍTICO no processamento de login:', error);
-    console.error('[AUTH] Stack:', error.stack);
-    return res.status(500).json({ error: 'Erro interno do servidor' });
-  }
 });
 
 // ===== ROTAS DE RESERVAS =====

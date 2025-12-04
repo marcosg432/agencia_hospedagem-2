@@ -10,12 +10,11 @@ import precoRoutes from './routes/precoRoutes';
 import hospedagemRoutes from './routes/hospedagemRoutes';
 import relatorioRoutes from './routes/relatorioRoutes';
 import disponibilidadeRoutes from './routes/disponibilidadeRoutes';
-import quartoRoutes from './routes/quartoRoutes';
 
 dotenv.config();
 
 const app = express();
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = process.env.PORT || 4000;
 const prisma = new PrismaClient();
 
 // Validar conexão com banco de dados na inicialização
@@ -122,18 +121,14 @@ app.use((req, res, next) => {
     'content-type': req.headers['content-type'],
     'authorization': req.headers.authorization ? 'Presente' : 'Ausente',
   });
-  try {
-    if (req.body && Object.keys(req.body).length > 0) {
-      console.log('Body:', JSON.stringify(req.body, null, 2));
-    }
-    if (req.params && Object.keys(req.params).length > 0) {
-      console.log('Params:', JSON.stringify(req.params, null, 2));
-    }
-    if (req.query && Object.keys(req.query).length > 0) {
-      console.log('Query:', JSON.stringify(req.query, null, 2));
-    }
-  } catch (error) {
-    console.error('Erro ao serializar dados do request:', error);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+  }
+  if (req.params && Object.keys(req.params).length > 0) {
+    console.log('Params:', JSON.stringify(req.params, null, 2));
+  }
+  if (req.query && Object.keys(req.query).length > 0) {
+    console.log('Query:', JSON.stringify(req.query, null, 2));
   }
   next();
 });
@@ -145,34 +140,10 @@ app.use('/api/precos', precoRoutes);
 app.use('/api/hospedagem', hospedagemRoutes);
 app.use('/api/disponibilidade', disponibilidadeRoutes);
 
-// Registrar rota de quartos se disponível
-if (quartoRoutes) {
-  app.use('/api/quartos', quartoRoutes);
-}
-
 // Rotas protegidas
 app.use('/api/calendario', calendarioRoutes);
 app.use('/api/bloqueios', bloqueioRoutes);
 app.use('/api/relatorios', relatorioRoutes);
-
-// Rota principal da API
-app.get('/api', (req, res) => {
-  res.json({
-    message: 'API Sistema de Hospedagem',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      auth: '/api/auth',
-      reservas: '/api/reservas',
-      hospedagem: '/api/hospedagem',
-      precos: '/api/precos',
-      disponibilidade: '/api/disponibilidade',
-      calendario: '/api/calendario',
-      bloqueios: '/api/bloqueios',
-      relatorios: '/api/relatorios',
-    },
-  });
-});
 
 // Endpoint de teste simples (antes do health check)
 app.get('/api/test', (req, res) => {
