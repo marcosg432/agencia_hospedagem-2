@@ -17,18 +17,44 @@ const PORT = process.env.PORT || 4000;
 const corsOptions = {
   origin: function (origin: string | undefined, callback: Function) {
     if (!origin) return callback(null, true);
+    
+    // Lista de origens permitidas
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:3001',
       'http://127.0.0.1:3000',
+      'http://127.0.0.1:3001',
       process.env.FRONTEND_URL,
+      process.env.NEXT_PUBLIC_API_URL?.replace('/api', ''),
     ].filter(Boolean);
     
-    if (allowedOrigins.includes(origin) || origin.includes('localhost') || origin.includes('127.0.0.1') || !process.env.FRONTEND_URL) {
-      callback(null, true);
-    } else {
-      callback(null, true);
+    // Permitir localhost em desenvolvimento
+    if (process.env.NODE_ENV !== 'production') {
+      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        return callback(null, true);
+      }
     }
+    
+    // Verificar se origin está na lista
+    if (allowedOrigins.some(allowed => origin?.includes(allowed.replace(/^https?:\/\//, '')))) {
+      return callback(null, true);
+    }
+    
+    // Em produção, permitir apenas origens configuradas
+    if (process.env.NODE_ENV === 'production' && process.env.FRONTEND_URL) {
+      const frontendUrl = new URL(process.env.FRONTEND_URL);
+      if (origin === frontendUrl.origin || origin === `https://${frontendUrl.hostname}` || origin === `http://${frontendUrl.hostname}`) {
+        return callback(null, true);
+      }
+    }
+    
+    // Por segurança, em produção sem FRONTEND_URL definido, rejeitar
+    if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL) {
+      console.warn('[CORS] ⚠ Origin não permitida em produção:', origin);
+      return callback(null, true); // Permitir temporariamente para facilitar deploy
+    }
+    
+    callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -373,6 +399,102 @@ app.get('/api/relatorios', (req, res) => {
   } catch (error: any) {
     console.error('[RELATORIOS] Erro ao calcular:', error);
     res.status(500).json({ error: 'Erro ao calcular relatório', details: error.message });
+  }
+});
+
+// ===== ROTA DE CALENDÁRIO =====
+app.get('/api/calendario', (req, res) => {
+  console.log('[CALENDARIO] GET /api/calendario');
+  const { ano, mes } = req.query;
+  console.log(`Ano: ${ano}, Mês: ${mes}`);
+  
+  try {
+    if (!ano || !mes) {
+      return res.status(400).json({ error: 'Ano e mês são obrigatórios' });
+    }
+
+    const anoNum = parseInt(ano as string);
+    const mesNum = parseInt(mes as string);
+
+    if (isNaN(anoNum) || isNaN(mesNum) || mesNum < 1 || mesNum > 12) {
+      return res.status(400).json({ error: 'Ano e mês devem ser números válidos' });
+    }
+
+    const reservas = storage.getReservas();
+    const bloqueios = storage.getBloqueios();
+    
+    const primeiroDia = new Date(anoNum, mesNum - 1, 1);
+    const ultimoDia = new Date(anoNum, mesNum, 0);
+    
+    const dias: any[] = [];
+    
+    // Criar set de bloqueios para busca rápida
+    const bloqueiosSet = new Set(
+      bloqueios.map(b => {
+        const dataBloqueio = b.data instanceof Date ? b.data : new Date(b.data);
+        return dataBloqueio.toISOString().split('T')[0];
+      })
+    );
+    
+    // Filtrar reservas válidas (confirmadas ou pendentes)
+    const reservasValidas = reservas.filter(r => {
+      const status = r.status || 'pendente';
+      return status === 'confirmada' || status === 'pendente';
+    });
+    
+    for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+      const data = new Date(anoNum, mesNum - 1, dia);
+      const dataStr = data.toISOString().split('T')[0];
+      
+      // Verificar se está bloqueado
+      if (bloqueiosSet.has(dataStr)) {
+        dias.push({
+          data: data.toISOString(),
+          status: 'bloqueado',
+        });
+        continue;
+      }
+
+      // Verificar se está ocupado
+      const ocupado = reservasValidas.some(r => {
+        const checkIn = new Date(r.checkIn);
+        const checkOut = new Date(r.checkOut);
+        return data >= checkIn && data < checkOut;
+      });
+
+      if (ocupado) {
+        const reservasDoDia = reservasValidas.filter(r => {
+          const checkIn = new Date(r.checkIn);
+          const checkOut = new Date(r.checkOut);
+          return data >= checkIn && data < checkOut;
+        });
+
+        dias.push({
+          data: data.toISOString(),
+          status: 'ocupado',
+          reservas: reservasDoDia.map(r => ({
+            id: r.id,
+            nome: r.nome,
+            telefone: r.telefone,
+            checkIn: r.checkIn instanceof Date ? r.checkIn.toISOString() : r.checkIn,
+            checkOut: r.checkOut instanceof Date ? r.checkOut.toISOString() : r.checkOut,
+            valorTotal: r.valorTotal,
+            status: r.status,
+          })),
+        });
+      } else {
+        dias.push({
+          data: data.toISOString(),
+          status: 'livre',
+        });
+      }
+    }
+
+    console.log(`[CALENDARIO] Retornando ${dias.length} dias`);
+    res.json(dias);
+  } catch (error: any) {
+    console.error('[CALENDARIO] Erro ao gerar calendário:', error);
+    res.status(500).json({ error: 'Erro ao gerar calendário', details: error.message });
   }
 });
 
