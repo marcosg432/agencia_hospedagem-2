@@ -11,8 +11,8 @@ echo "================================================"
 # Criar pasta e entrar
 echo ""
 echo "📁 Criando pasta do projeto..."
-mkdir -p ~/casa10
-cd ~/casa10
+mkdir -p ~/pousada
+cd ~/pousada
 
 # Clonar repositório
 echo ""
@@ -64,7 +64,7 @@ echo ""
 echo "📝 Criando script de inicialização..."
 cat > iniciar.sh << 'EOFSCRIPT'
 #!/bin/bash
-cd ~/casa10/agencia_hospedagem-2
+cd ~/pousada/agencia_hospedagem-2
 
 # Backend em background
 echo "🚀 Iniciando backend na porta 4000..."
@@ -97,7 +97,7 @@ EOFSCRIPT
 # Criar script para parar
 cat > parar.sh << 'EOFSCRIPT'
 #!/bin/bash
-cd ~/casa10/agencia_hospedagem-2
+cd ~/pousada/agencia_hospedagem-2
 
 if [ -f logs/pids.txt ]; then
     echo "🛑 Parando processos..."
@@ -128,7 +128,7 @@ echo "   nano backend/.env"
 echo "   nano frontend/.env.local"
 echo ""
 echo "2. Inicie o sistema:"
-echo "   cd ~/casa10/agencia_hospedagem-2"
+echo "   cd ~/pousada/agencia_hospedagem-2"
 echo "   bash iniciar.sh"
 echo ""
 echo "3. Para parar o sistema:"
