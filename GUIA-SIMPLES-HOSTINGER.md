@@ -36,7 +36,7 @@ nano frontend/.env.local
 ### Passo 4: Iniciar o Sistema
 
 ```bash
-cd ~/pousada/agencia_hospedagem-2
+cd ~/casa10/agencia_hospedagem-2
 bash iniciar.sh
 ```
 

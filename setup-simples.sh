@@ -97,7 +97,7 @@ EOFSCRIPT
 # Criar script para parar
 cat > parar.sh << 'EOFSCRIPT'
 #!/bin/bash
-cd ~/pousada/agencia_hospedagem-2
+cd ~/casa10/agencia_hospedagem-2
 
 if [ -f logs/pids.txt ]; then
     echo "🛑 Parando processos..."
@@ -128,7 +128,7 @@ echo "   nano backend/.env"
 echo "   nano frontend/.env.local"
 echo ""
 echo "2. Inicie o sistema:"
-echo "   cd ~/pousada/agencia_hospedagem-2"
+echo "   cd ~/casa10/agencia_hospedagem-2"
 echo "   bash iniciar.sh"
 echo ""
 echo "3. Para parar o sistema:"
