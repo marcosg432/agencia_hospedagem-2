@@ -68,7 +68,7 @@ export const criarReserva = async (
 
       if (bloqueios.length > 0) {
         console.error('ERRO: Período contém datas bloqueadas');
-        const datasBloqueadas = bloqueios.map(b => {
+        const datasBloqueadas = bloqueios.map((b: any) => {
           const data = new Date(b.data);
           return data.toLocaleDateString('pt-BR');
         }).join(', ');

@@ -11,7 +11,7 @@ import { storage } from './storage-json';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = parseInt(process.env.PORT || '4000', 10);
 
 // Configuração CORS
 const corsOptions = {
@@ -36,7 +36,7 @@ const corsOptions = {
     }
     
     // Verificar se origin está na lista
-    if (allowedOrigins.some(allowed => origin?.includes(allowed.replace(/^https?:\/\//, '')))) {
+    if (allowedOrigins.some((allowed: string) => origin?.includes(allowed.replace(/^https?:\/\//, '')))) {
       return callback(null, true);
     }
     
