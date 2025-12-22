@@ -7,36 +7,18 @@ import Link from 'next/link';
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>({ nome: 'Administrador', email: 'admin@admin.com' });
 
+  // Removido verificação de autenticação - acesso público
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-
-    if (!token || !userData) {
-      router.push('/admin/login');
-      return;
-    }
-
-    setUser(JSON.parse(userData));
-  }, [router]);
+    // Sem verificação de login - sempre permite acesso
+    setUser({ nome: 'Administrador', email: 'admin@admin.com' });
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    router.push('/admin/login');
+    // Removido logout - não há mais sistema de autenticação
+    router.push('/');
   };
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
-        </div>
-      </div>
-    );
-  }
 
   const menuItems = [
     { href: '/admin/painel', label: 'Painel', icon: '📊' },

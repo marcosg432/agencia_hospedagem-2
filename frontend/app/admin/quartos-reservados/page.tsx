@@ -78,9 +78,8 @@ export default function QuartosReservados() {
       if (!isMountedRef.current) return;
 
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        window.location.href = '/admin/login';
-        return;
+        // Removido redirecionamento - acesso público
+        console.warn('[QUARTOS] Erro 401 - mas continuando (acesso público)');
       }
 
       setError(error.response?.data?.error || error.message || 'Erro ao carregar reservas');

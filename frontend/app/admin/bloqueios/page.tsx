@@ -45,9 +45,8 @@ export default function Bloqueios() {
       console.error('[BLOQUEIOS] Data:', error.response?.data);
       
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        window.location.href = '/admin/login';
-        return;
+        // Removido redirecionamento - acesso público
+        console.warn('[BLOQUEIOS] Erro 401 - mas continuando (acesso público)');
       }
       
       alert(error.response?.data?.error || 'Erro ao carregar bloqueios');

@@ -70,11 +70,8 @@ export default function Reservas() {
       }
 
       if (error.response?.status === 401) {
-        // Token inválido, redirecionar para login
-        console.log('[RESERVAS] Token inválido, redirecionando para login');
-        localStorage.removeItem('token');
-        window.location.href = '/admin/login';
-        return;
+        // Removido redirecionamento - acesso público
+        console.warn('[RESERVAS] Erro 401 - mas continuando (acesso público)');
       }
 
       const errorMessage = error.response?.data?.error || error.message || 'Erro ao carregar reservas';
@@ -164,11 +161,9 @@ export default function Reservas() {
         errorMessage = 'Reserva não encontrada. A página será atualizada.';
         setTimeout(() => carregarReservas(), 1000);
       } else if (error.response?.status === 401) {
-        errorMessage = 'Sessão expirada. Redirecionando para login...';
-        localStorage.removeItem('token');
-        setTimeout(() => {
-          window.location.href = '/admin/login';
-        }, 2000);
+        // Removido redirecionamento - acesso público
+        errorMessage = 'Erro de autenticação (acesso público)';
+        console.warn('[RESERVAS] Erro 401 - mas continuando (acesso público)');
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -209,11 +204,9 @@ export default function Reservas() {
         errorMessage = 'Reserva não encontrada. A página será atualizada.';
         setTimeout(() => carregarReservas(), 1000);
       } else if (error.response?.status === 401) {
-        errorMessage = 'Sessão expirada. Redirecionando para login...';
-        localStorage.removeItem('token');
-        setTimeout(() => {
-          window.location.href = '/admin/login';
-        }, 2000);
+        // Removido redirecionamento - acesso público
+        errorMessage = 'Erro de autenticação (acesso público)';
+        console.warn('[RESERVAS] Erro 401 - mas continuando (acesso público)');
       } else if (error.message) {
         errorMessage = error.message;
       }

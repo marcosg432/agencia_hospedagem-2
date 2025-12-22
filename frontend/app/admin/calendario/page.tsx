@@ -55,9 +55,8 @@ export default function Calendario() {
       }
 
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        window.location.href = '/admin/login';
-        return;
+        // Removido redirecionamento - acesso público
+        console.warn('[CALENDARIO] Erro 401 - mas continuando (acesso público)');
       }
 
       const errorMessage = error.response?.data?.error || error.message || 'Erro ao carregar calendário';

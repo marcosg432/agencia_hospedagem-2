@@ -57,9 +57,9 @@ export default function Painel() {
       setRelatorio(relatorioRes.data);
     } catch (error: any) {
       console.error('[PAINEL] Erro ao carregar dados:', error);
+      // Removido redirecionamento para login - acesso público
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        window.location.href = '/admin/login';
+        console.warn('[PAINEL] Erro 401 - mas continuando (acesso público)');
       }
     } finally {
       setLoading(false);
