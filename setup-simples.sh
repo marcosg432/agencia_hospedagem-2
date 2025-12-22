@@ -11,8 +11,8 @@ echo "================================================"
 # Criar pasta e entrar
 echo ""
 echo "📁 Criando pasta do projeto..."
-mkdir -p ~/pousada
-cd ~/pousada
+mkdir -p ~/casa10
+cd ~/casa10
 
 # Clonar repositório
 echo ""
@@ -64,7 +64,7 @@ echo ""
 echo "📝 Criando script de inicialização..."
 cat > iniciar.sh << 'EOFSCRIPT'
 #!/bin/bash
-cd ~/pousada/agencia_hospedagem-2
+cd ~/casa10/agencia_hospedagem-2
 
 # Backend em background
 echo "🚀 Iniciando backend na porta 4000..."

@@ -17,7 +17,7 @@
 curl -sSL https://raw.githubusercontent.com/marcosg432/agencia_hospedagem-2/main/setup-simples.sh | bash
 
 # OU se você já tem o projeto clonado:
-cd ~/pousada/agencia_hospedagem-2
+cd ~/casa10/agencia_hospedagem-2
 bash setup-simples.sh
 ```
 
@@ -51,8 +51,8 @@ Se preferir fazer manualmente:
 ### 1. Criar pasta e clonar
 
 ```bash
-mkdir -p ~/pousada
-cd ~/pousada
+mkdir -p ~/casa10
+cd ~/casa10
 git clone https://github.com/marcosg432/agencia_hospedagem-2.git
 cd agencia_hospedagem-2
 ```
@@ -110,13 +110,13 @@ Salve: `Ctrl+X`, depois `Y`, depois `Enter`
 
 **Terminal 1 - Backend:**
 ```bash
-cd ~/pousada/agencia_hospedagem-2/backend
+cd ~/casa10/agencia_hospedagem-2/backend
 PORT=4000 node dist/server-sem-banco.js
 ```
 
 **Terminal 2 - Frontend:**
 ```bash
-cd ~/pousada/agencia_hospedagem-2/frontend
+cd ~/casa10/agencia_hospedagem-2/frontend
 PORT=3001 npm start
 ```
 
@@ -145,12 +145,13 @@ Se quiser rodar em background sem PM2:
 
 ```bash
 # Backend
-cd ~/pousada/agencia_hospedagem-2/backend
+cd ~/casa10/agencia_hospedagem-2/backend
 nohup PORT=4000 node dist/server-sem-banco.js > ../logs/backend.log 2>&1 &
 
 # Frontend
-cd ~/pousada/agencia_hospedagem-2/frontend
+cd ~/casa10/agencia_hospedagem-2/frontend
 nohup PORT=3001 npm start > ../logs/frontend.log 2>&1 &
+```
 ```
 
 Para parar:
@@ -193,7 +194,7 @@ curl http://localhost:3001
 ## Atualizar o Projeto
 
 ```bash
-cd ~/pousada/agencia_hospedagem-2
+cd ~/casa10/agencia_hospedagem-2
 git pull
 cd backend && npm install && npm run build && cd ..
 cd frontend && npm install && npm run build && cd ..
@@ -207,7 +208,7 @@ cd frontend && npm install && npm run build && cd ..
 1. **Portas:** O sistema usa porta 3001 (frontend) e 4000 (backend) para evitar conflitos
 2. **Se precisar mudar:** Edite os arquivos `.env` e `.env.local`
 3. **Para manter rodando:** Use `screen` ou `tmux` para manter sessões abertas
-4. **Logs:** Estão em `~/pousada/agencia_hospedagem-2/logs/`
+4. **Logs:** Estão em `~/casa10/agencia_hospedagem-2/logs/`
 
 ## 🔧 Usando Screen (Recomendado)
 
@@ -219,13 +220,13 @@ sudo apt install screen -y
 
 # Criar sessão para backend
 screen -S backend
-cd ~/pousada/agencia_hospedagem-2/backend
+cd ~/casa10/agencia_hospedagem-2/backend
 PORT=4000 node dist/server-sem-banco.js
 # Ctrl+A depois D para sair da sessão
 
 # Criar sessão para frontend
 screen -S frontend
-cd ~/pousada/agencia_hospedagem-2/frontend
+cd ~/casa10/agencia_hospedagem-2/frontend
 PORT=3001 npm start
 # Ctrl+A depois D para sair da sessão
 
