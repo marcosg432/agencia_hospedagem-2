@@ -1,5 +1,3 @@
-import { Reserva } from '@prisma/client';
-
 interface ReservaCompleta {
   id?: number;
   nome: string;

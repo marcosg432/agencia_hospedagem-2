@@ -56,7 +56,7 @@ export async function obterCalendarioMes(ano: number, mes: number): Promise<DiaC
   console.log(`✓ ${bloqueios.length} bloqueio(s) encontrado(s) no banco`);
 
   const bloqueiosSet = new Set(
-    bloqueios.map(b => {
+    bloqueios.map((b: any) => {
       const dataBloqueio = b.data instanceof Date ? b.data : new Date(b.data);
       return dataBloqueio.toISOString().split('T')[0];
     })
@@ -76,19 +76,19 @@ export async function obterCalendarioMes(ano: number, mes: number): Promise<DiaC
     }
 
     // Verificar se está ocupado (considerar apenas reservas confirmadas ou pendentes)
-    const reservasValidas = reservas.filter(r => {
+    const reservasValidas = reservas.filter((r: any) => {
       const status = r.status || 'pendente';
       return status === 'confirmada' || status === 'pendente';
     });
 
-    const ocupado = reservasValidas.some(r => {
+    const ocupado = reservasValidas.some((r: any) => {
       const checkIn = new Date(r.checkIn);
       const checkOut = new Date(r.checkOut);
       return data >= checkIn && data < checkOut;
     });
 
     if (ocupado) {
-      const reservasDoDia = reservasValidas.filter(r => {
+      const reservasDoDia = reservasValidas.filter((r: any) => {
         const checkIn = new Date(r.checkIn);
         const checkOut = new Date(r.checkOut);
         return data >= checkIn && data < checkOut;

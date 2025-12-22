@@ -104,14 +104,14 @@ export const verificarDisponibilidade = async (req: Request, res: Response) => {
 
     return res.json({
       disponivel,
-      reservasConflitantes: reservasConflitantes.map(r => ({
+      reservasConflitantes: reservasConflitantes.map((r: any) => ({
         id: r.id,
         quarto: r.quarto,
         checkIn: r.checkIn,
         checkOut: r.checkOut,
         nome: r.nome,
       })),
-      bloqueios: bloqueios.map(b => ({
+      bloqueios: bloqueios.map((b: any) => ({
         data: b.data,
         motivo: b.motivo,
       })),

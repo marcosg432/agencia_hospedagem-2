@@ -55,7 +55,7 @@ export async function gerarRelatorioMes(ano: number, mes: number): Promise<Relat
   console.log(`✓ ${reservas.length} reserva(s) encontrada(s) no banco`);
 
   // Filtrar apenas reservas CONFIRMADAS
-  const reservasConfirmadas = reservas.filter(r => {
+  const reservasConfirmadas = reservas.filter((r: any) => {
     const status = (r.status || '').toLowerCase().trim();
     return status === 'confirmada';
   });
@@ -63,7 +63,7 @@ export async function gerarRelatorioMes(ano: number, mes: number): Promise<Relat
   console.log(`✓ ${reservasConfirmadas.length} reserva(s) confirmada(s) de ${reservas.length} total`);
 
   // Calcular total faturado (apenas reservas confirmadas)
-  const totalFaturado = reservasConfirmadas.reduce((sum, r) => {
+  const totalFaturado = reservasConfirmadas.reduce((sum: number, r: any) => {
     const valor = parseFloat(r.valorTotal?.toString() || '0');
     console.log(`  Reserva ${r.id}: R$ ${valor.toFixed(2)}`);
     return sum + valor;
@@ -85,7 +85,7 @@ export async function gerarRelatorioMes(ano: number, mes: number): Promise<Relat
 
   // Calcular dias ocupados por reservas confirmadas
   const diasOcupadosSet = new Set<string>();
-  reservasConfirmadas.forEach(r => {
+  reservasConfirmadas.forEach((r: any) => {
     const checkIn = new Date(r.checkIn);
     const checkOut = new Date(r.checkOut);
     
@@ -105,7 +105,7 @@ export async function gerarRelatorioMes(ano: number, mes: number): Promise<Relat
 
   // Calcular dias bloqueados
   const diasBloqueadosSet = new Set<string>();
-  bloqueios.forEach(b => {
+  bloqueios.forEach((b: any) => {
     const dataBloqueio = b.data instanceof Date ? b.data : new Date(b.data);
     const dataNormalizada = new Date(dataBloqueio.getFullYear(), dataBloqueio.getMonth(), dataBloqueio.getDate());
     if (dataNormalizada >= primeiroDia && dataNormalizada <= ultimoDia) {
