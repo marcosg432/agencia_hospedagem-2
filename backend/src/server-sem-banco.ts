@@ -19,14 +19,14 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     
     // Lista de origens permitidas
-    const allowedOrigins = [
+    const allowedOrigins: string[] = [
       'http://localhost:3000',
       'http://localhost:3001',
       'http://127.0.0.1:3000',
       'http://127.0.0.1:3001',
       process.env.FRONTEND_URL,
       process.env.NEXT_PUBLIC_API_URL?.replace('/api', ''),
-    ].filter(Boolean);
+    ].filter((url): url is string => Boolean(url));
     
     // Permitir localhost em desenvolvimento
     if (process.env.NODE_ENV !== 'production') {
