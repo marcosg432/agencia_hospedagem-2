@@ -13,7 +13,7 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 4000,
         JWT_SECRET: process.env.JWT_SECRET || 'seu-jwt-secret-super-seguro',
-        FRONTEND_URL: 'http://localhost:3001',
+        FRONTEND_URL: 'http://localhost:3002',
       },
       error_file: '../logs/backend-error.log',
       out_file: '../logs/backend-out.log',
@@ -30,7 +30,7 @@ module.exports = {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'production',
-        PORT: 3001,
+        PORT: 3002,
         NEXT_PUBLIC_API_URL: 'http://localhost:4000/api',
       },
       error_file: '../logs/frontend-error.log',
